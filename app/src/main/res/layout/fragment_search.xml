@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="10dp"
+    android:background="@color/mainBackground"
+    tools:context=".fragments.FragmentSearch">
+
+    <TextView
+        android:id="@+id/movieNameTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="cursive"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:textAppearance="@color/white"
+        android:text="@string/text_search"
+        android:textAlignment="center"
+        android:textSize="24sp" />
+
+    <EditText
+        android:id="@+id/movieNameInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginRight="5dp"
+        android:background="#494951"
+        android:hint="@string/hint_movie_name"
+        android:importantForAutofill="no"
+        android:inputType="text"
+        android:minHeight="48dp" />
+
+    <Button
+        android:id="@+id/btnStartSearch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="95dp"
+        android:fontFamily="cursive"
+        android:text="@string/button_search" />
+
+    <GridView
+        android:id="@+id/movieGridView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="150dp"
+        android:numColumns="2" />
+
+</FrameLayout>
