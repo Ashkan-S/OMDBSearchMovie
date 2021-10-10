@@ -58,6 +58,8 @@ class FragmentSearch : Fragment() {
     }
 
     private fun startSearchMovie() {
+        val adapter = SearchMovieRecyclerAdapter()
+        movieRecyclerView.adapter = adapter
 
         val retrofit = Retrofit.Builder().baseUrl(baseUrl)
             .addConverterFactory(MoshiConverterFactory.create()).build()
@@ -70,18 +72,13 @@ class FragmentSearch : Fragment() {
                     call: Call<MovieListResult>,
                     response: Response<MovieListResult>
                 ) {
-                    fillMovieRecyclerView(response.body()?.Search!!)
+                    adapter.submitList(response.body()?.Search)
                 }
 
                 override fun onFailure(call: Call<MovieListResult>, t: Throwable) {
                     Log.d("TAG", "onFailure: ${t.message}")
                 }
             })
-    }
-
-    fun fillMovieRecyclerView(movies: List<Search>) {
-        val movieAdapter = SearchMovieRecyclerAdapter(movies)
-        movieRecyclerView.adapter = movieAdapter
     }
 
     private fun View.hideKeyboard() {
