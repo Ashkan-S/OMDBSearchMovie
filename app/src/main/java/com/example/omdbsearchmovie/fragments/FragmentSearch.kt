@@ -10,21 +10,21 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.fragment.app.FragmentTransaction
+import androidx.recyclerview.widget.RecyclerView
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import com.example.omdbsearchmovie.*
-import com.example.omdbsearchmovie.MovieAdapterClass
 
 class FragmentSearch : Fragment() {
 
     private val apikey = "ab906375"
     private val baseUrl = "https://www.omdbapi.com/"
 
-    private lateinit var gridView: GridView
     private lateinit var movieNameInput: EditText
+    private lateinit var movieRecyclerView: RecyclerView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,18 +33,15 @@ class FragmentSearch : Fragment() {
 
         val view: View = inflater.inflate(R.layout.fragment_search, container, false)
 
-        gridView = view.findViewById(R.id.movieGridView)
+        movieRecyclerView = view.findViewById(R.id.movieRecyclerView)
         movieNameInput = view.findViewById(R.id.movieNameInput)
 
         val startSearch: Button = view.findViewById(R.id.btnStartSearch)
         startSearch.setOnClickListener {
             it.hideKeyboard()
-            startSearchMovie(inflater)
+            startSearchMovie()
         }
 
-        gridView.setOnItemClickListener { _, _, position, _ ->
-            startFragmentDetail(gridView.getItemAtPosition(position))
-        }
         // Inflate the layout for this fragment
         return view
     }
@@ -60,7 +57,7 @@ class FragmentSearch : Fragment() {
         ft.commit()
     }
 
-    private fun startSearchMovie(inflater: LayoutInflater) {
+    private fun startSearchMovie() {
 
         val retrofit = Retrofit.Builder().baseUrl(baseUrl)
             .addConverterFactory(MoshiConverterFactory.create()).build()
@@ -73,7 +70,7 @@ class FragmentSearch : Fragment() {
                     call: Call<MovieListResult>,
                     response: Response<MovieListResult>
                 ) {
-                    fillMovieGridView(inflater, response)
+                    fillMovieRecyclerView(response.body()?.Search!!)
                 }
 
                 override fun onFailure(call: Call<MovieListResult>, t: Throwable) {
@@ -82,9 +79,9 @@ class FragmentSearch : Fragment() {
             })
     }
 
-    fun fillMovieGridView(inflater: LayoutInflater, movies: Response<MovieListResult>) {
-        val movieAdapter = MovieAdapterClass(inflater, movies)
-        gridView.adapter = movieAdapter
+    fun fillMovieRecyclerView(movies: List<Search>) {
+        val movieAdapter = SearchMovieRecyclerAdapter(movies)
+        movieRecyclerView.adapter = movieAdapter
     }
 
     private fun View.hideKeyboard() {
