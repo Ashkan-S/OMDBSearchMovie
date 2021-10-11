@@ -9,9 +9,9 @@ import androidx.fragment.app.FragmentTransaction
 import com.example.omdbsearchmovie.R
 import android.content.Context
 import android.util.Log
-import android.widget.*
 import com.example.omdbsearchmovie.MovieResult
 import com.example.omdbsearchmovie.RetrofitInterfaceClass
+import com.example.omdbsearchmovie.databinding.FragmentDetailBinding
 import com.squareup.picasso.Picasso
 import retrofit2.Call
 import retrofit2.Callback
@@ -24,30 +24,19 @@ class FragmentDetail : Fragment() {
     private val apikey = "ab906375"
     private val baseUrl = "https://www.omdbapi.com/"
 
-    private lateinit var txtFullMovieName: TextView
-    private lateinit var txtYearTypeTime: TextView
-    private lateinit var txtFullMoviePlot: TextView
-    private lateinit var txtmovieRating: TextView
-    private lateinit var imgPosterView: ImageView
+    private lateinit var binding: FragmentDetailBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
 
-        val view: View = inflater.inflate(R.layout.fragment_detail, container, false)
-
-        txtFullMovieName = view.findViewById(R.id.txtFullMovieName)
-        txtYearTypeTime = view.findViewById(R.id.txtYearTypeTime)
-        txtFullMoviePlot = view.findViewById(R.id.txtFullMoviePlot)
-        txtmovieRating = view.findViewById(R.id.txtRatingScore)
-        imgPosterView = view.findViewById(R.id.imgPosterView)
+        binding = FragmentDetailBinding.inflate(inflater, container, false)
 
         val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
         val imdbIDSelectedMovie = sharedPref.getString("imdbID", 0.toString())
 
-        val backToSearch: Button = view.findViewById(R.id.btnBack)
-        backToSearch.setOnClickListener { startFragmentSearch() }
+        binding.btnBack.setOnClickListener { startFragmentSearch() }
 
         val retrofit = Retrofit.Builder().baseUrl(baseUrl)
             .addConverterFactory(MoshiConverterFactory.create()).build()
@@ -68,7 +57,7 @@ class FragmentDetail : Fragment() {
                 }
             })
         // Inflate the layout for this fragment
-        return view
+        return binding.root
     }
 
     private fun startFragmentSearch() {
@@ -79,11 +68,13 @@ class FragmentDetail : Fragment() {
     }
 
     private fun fillMovieDetail(movie: Response<MovieResult>) {
-        Picasso.get().load(movie.body()!!.Poster).into(imgPosterView)
-        txtFullMovieName.text = movie.body()!!.Title
-        txtYearTypeTime.text =
+        val yearAndGenreAndRuntime =
             movie.body()!!.Year + " " + movie.body()!!.Genre + " " + movie.body()!!.Runtime
-        txtFullMoviePlot.text = movie.body()!!.Plot
-        txtmovieRating.text = movie.body()!!.Metascore + "/100"
+        val rate = movie.body()!!.MetaScore + "/100"
+        Picasso.get().load(movie.body()!!.Poster).into(binding.imgPosterView)
+        binding.txtFullMovieName.text = movie.body()!!.Title
+        binding.txtFullMoviePlot.text = movie.body()!!.Plot
+        binding.txtYearTypeTime.text = yearAndGenreAndRuntime
+        binding.txtRatingScore.text = rate
     }
 }
