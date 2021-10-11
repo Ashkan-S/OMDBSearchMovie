@@ -5,10 +5,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentTransaction
-import com.example.omdbsearchmovie.R
-import android.content.Context
 import android.util.Log
+import androidx.navigation.fragment.navArgs
 import com.example.omdbsearchmovie.MovieResult
 import com.example.omdbsearchmovie.RetrofitInterfaceClass
 import com.example.omdbsearchmovie.databinding.FragmentDetailBinding
@@ -26,6 +24,8 @@ class FragmentDetail : Fragment() {
 
     private lateinit var binding: FragmentDetailBinding
 
+    private val args by navArgs<FragmentDetailArgs>()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -33,17 +33,12 @@ class FragmentDetail : Fragment() {
 
         binding = FragmentDetailBinding.inflate(inflater, container, false)
 
-        val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
-        val imdbIDSelectedMovie = sharedPref.getString("imdbID", 0.toString())
-
-        binding.btnBack.setOnClickListener { startFragmentSearch() }
-
         val retrofit = Retrofit.Builder().baseUrl(baseUrl)
             .addConverterFactory(MoshiConverterFactory.create()).build()
 
         val retrofitInterface = retrofit.create(RetrofitInterfaceClass::class.java)
 
-        retrofitInterface.searchMovieByID(apikey, imdbIDSelectedMovie.toString())
+        retrofitInterface.searchMovieByID(apikey, args.imdbID)
             .enqueue(object : Callback<MovieResult> {
                 override fun onResponse(
                     call: Call<MovieResult>,
@@ -58,13 +53,6 @@ class FragmentDetail : Fragment() {
             })
         // Inflate the layout for this fragment
         return binding.root
-    }
-
-    private fun startFragmentSearch() {
-        val frgSearch = FragmentSearch()
-        val ft: FragmentTransaction = parentFragmentManager.beginTransaction()
-        ft.replace(R.id.fragmentView, frgSearch)
-        ft.commit()
     }
 
     private fun fillMovieDetail(movie: Response<MovieResult>) {

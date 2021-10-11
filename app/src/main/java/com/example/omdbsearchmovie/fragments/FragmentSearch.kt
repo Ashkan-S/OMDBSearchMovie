@@ -8,7 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import androidx.fragment.app.FragmentTransaction
+import androidx.navigation.fragment.findNavController
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -24,35 +24,16 @@ class FragmentSearch : Fragment() {
 
     private lateinit var binding: FragmentSearchBinding
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        binding = FragmentSearchBinding.inflate(inflater, container, false)
-
-        binding.btnStartSearch.setOnClickListener {
-            it.hideKeyboard()
-            startSearchMovie()
+        val adapter = SearchMovieRecyclerAdapter {
+            findNavController().navigate(
+                FragmentSearchDirections.actionFragmentSearchToFragmentDetail(
+                    it
+                )
+            )
         }
-
-        // Inflate the layout for this fragment
-        return binding.root
-    }
-
-    private fun startFragmentDetail(imdbID: Any) {
-        val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
-        val editor = sharedPref.edit()
-        editor.putString("imdbID", imdbID.toString())
-        editor.apply()
-        val frgDetail = FragmentDetail()
-        val ft: FragmentTransaction = parentFragmentManager.beginTransaction()
-        ft.replace(R.id.fragmentView, frgDetail)
-        ft.commit()
-    }
-
-    private fun startSearchMovie() {
-        val adapter = SearchMovieRecyclerAdapter()
         binding.movieRecyclerView.adapter = adapter
 
         val retrofit = Retrofit.Builder().baseUrl(baseUrl)
@@ -60,19 +41,32 @@ class FragmentSearch : Fragment() {
 
         val retrofitInterface = retrofit.create(RetrofitInterfaceClass::class.java)
 
-        retrofitInterface.searchMovieByTitle(apikey, binding.movieNameInput.text.toString())
-            .enqueue(object : Callback<MovieListResult> {
-                override fun onResponse(
-                    call: Call<MovieListResult>,
-                    response: Response<MovieListResult>
-                ) {
-                    adapter.submitList(response.body()?.Search)
-                }
+        binding.btnStartSearch.setOnClickListener {
+            it.hideKeyboard()
+            retrofitInterface.searchMovieByTitle(apikey, binding.movieNameInput.text.toString())
+                .enqueue(object : Callback<MovieListResult> {
+                    override fun onResponse(
+                        call: Call<MovieListResult>,
+                        response: Response<MovieListResult>
+                    ) {
+                        adapter.submitList(response.body()?.Search)
+                    }
 
-                override fun onFailure(call: Call<MovieListResult>, t: Throwable) {
-                    Log.d("TAG", "onFailure: ${t.message}")
-                }
-            })
+                    override fun onFailure(call: Call<MovieListResult>, t: Throwable) {
+                        Log.d("TAG", "onFailure: ${t.message}")
+                    }
+                })
+        }
+
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentSearchBinding.inflate(inflater, container, false)
+        // Inflate the layout for this fragment
+        return binding.root
     }
 
     private fun View.hideKeyboard() {
