@@ -1,4 +1,4 @@
-package com.example.omdbsearchmovie
+package com.example.omdbsearchmovie.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,27 +6,29 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.omdbsearchmovie.databinding.MoviesItemsBinding
+import com.example.omdbsearchmovie.models.Search
 import com.squareup.picasso.Picasso
 
-class SearchMovieRecyclerAdapter(val clickListener:(String)->Unit) :
+class SearchMovieRecyclerAdapter(val clickListener: (String) -> Unit) :
     ListAdapter<Search, SearchMovieRecyclerAdapter.SearchMovieViewHolder>(MovieDiffUtils()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchMovieViewHolder =
         SearchMovieViewHolder(
-            MoviesItemsBinding.inflate(LayoutInflater.from(parent.context),parent,false)
+            MoviesItemsBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
 
     override fun onBindViewHolder(holder: SearchMovieViewHolder, position: Int) =
         holder.onBind(getItem(position))
 
-    inner class SearchMovieViewHolder(private val binding: MoviesItemsBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class SearchMovieViewHolder(private val binding: MoviesItemsBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
         fun onBind(item: Search) {
             Picasso.get().load(item.Poster).into(binding.imageViewMoviePoster)
             binding.textViewMovieName.text = item.Title
-            val typeAndYear = item.Type + " " + item.Year
+            val typeAndYear = item.Type + " - " + item.Year
             binding.textViewMovieTypeAndYear.text = typeAndYear
-            binding.root.setOnClickListener{
+            binding.root.setOnClickListener {
                 clickListener(item.imdbID)
             }
         }

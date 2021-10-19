@@ -1,4 +1,4 @@
-package com.example.omdbsearchmovie
+package com.example.omdbsearchmovie.models
 
 import com.squareup.moshi.JsonClass
 

@@ -1,4 +1,4 @@
-package com.example.omdbsearchmovie
+package com.example.omdbsearchmovie.models
 
 import com.squareup.moshi.JsonClass
 
@@ -12,7 +12,7 @@ data class MovieResult(
     val Director: String,
     val Genre: String,
     val Language: String,
-    val MetaScore: String,
+    val Metascore: String,
     val Plot: String,
     val Poster: String,
     val Production: String,

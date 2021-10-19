@@ -1,5 +1,7 @@
 package com.example.omdbsearchmovie
 
+import com.example.omdbsearchmovie.models.MovieListResult
+import com.example.omdbsearchmovie.models.MovieResult
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
