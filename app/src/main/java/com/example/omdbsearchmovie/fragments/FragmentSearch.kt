@@ -8,12 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import com.example.omdbsearchmovie.*
 import com.example.omdbsearchmovie.adapters.FavoriteMovieRecyclerAdapter
 import com.example.omdbsearchmovie.adapters.SearchMovieRecyclerAdapter
@@ -68,30 +64,25 @@ class FragmentSearch : Fragment() {
         binding.btnStartSearch.setOnClickListener {
             it.hideKeyboard()
             binding.movieRecyclerView.adapter = adapterSearchFromInternet
+            val movieTitle = binding.movieNameInput.text.toString()
 
-            retrofitInterface.searchMovieByTitle(apikey, binding.movieNameInput.text.toString())
-                .enqueue(object : Callback<MovieListResult> {
-                    override fun onResponse(
-                        call: Call<MovieListResult>,
-                        response: Response<MovieListResult>
-                    ) {
-                        adapterSearchFromInternet.submitList(response.body()?.Search)
-                    }
-
-                    override fun onFailure(call: Call<MovieListResult>, t: Throwable) {
-                        Toast.makeText(
-                            requireContext(),
-                            "Please check you favorite movie",
-                            Toast.LENGTH_LONG
-                        ).show()
-                        Log.d("TAG", "onFailure: ${t.message}")
-                    }
-                })
+            lifecycleScope.launch(Dispatchers.IO) {
+                lateinit var result: MovieListResult
+                try {
+                    result = retrofitInterface.searchMovieByTitle(
+                        apikey,
+                        movieTitle
+                    )
+                    launch(Dispatchers.Main) { adapterSearchFromInternet.submitList(result.Search) }
+                } catch (e: Exception) {
+                    Log.d("TAG", "onFailure: $e")
+                }
+            }
         }
 
         binding.btnFavorite.setOnClickListener {
             binding.movieRecyclerView.adapter = adapterSearchFromDB
-            lifecycleScope.launch(Dispatchers.IO) {
+            lifecycleScope.launch {
                 adapterSearchFromDB.submitList(
                     db.FavoriteMovieDAO().getFavoriteMovie()
                 )
