@@ -48,6 +48,12 @@ class FragmentDetail : Fragment() {
 
         lifecycleScope.launch(Dispatchers.IO) {
             favoriteMovie = retrofitInterface.searchMovieByID(apikey, args.imdbID)
+            val favoriteMovieImdbIDList = db.FavoriteMovieDAO().getFavoriteMovieImdbID()
+            if (favoriteMovie.imdbID in favoriteMovieImdbIDList) {
+                launch(Dispatchers.Main) { binding.btnRemoveFromFavorite.visibility = View.VISIBLE }
+            } else {
+                launch(Dispatchers.Main) { binding.btnAddToFavorite.visibility = View.VISIBLE }
+            }
             launch(Dispatchers.Main) {
                 fillMovieDetail(favoriteMovie)
             }
@@ -55,6 +61,10 @@ class FragmentDetail : Fragment() {
 
         binding.btnAddToFavorite.setOnClickListener {
             addToFavoriteMovie(favoriteMovie)
+        }
+
+        binding.btnRemoveFromFavorite.setOnClickListener {
+            removeFromFavoriteMovie(favoriteMovie)
         }
     }
 
@@ -82,6 +92,22 @@ class FragmentDetail : Fragment() {
                 movie.Poster,
                 movie.Title
             )
-        lifecycleScope.launch(Dispatchers.IO) { db.FavoriteMovieDAO().insertMovie(favoriteMovie) }
+        lifecycleScope.launch(Dispatchers.IO) {
+            db.FavoriteMovieDAO().insertMovie(favoriteMovie)
+            launch(Dispatchers.Main) {
+                binding.btnRemoveFromFavorite.visibility = View.VISIBLE
+                binding.btnAddToFavorite.visibility = View.INVISIBLE
+            }
+        }
+    }
+
+    private fun removeFromFavoriteMovie(movie: MovieResult) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            db.FavoriteMovieDAO().removeFavoriteMovie(movie.imdbID)
+            launch(Dispatchers.Main) {
+                binding.btnRemoveFromFavorite.visibility = View.INVISIBLE
+                binding.btnAddToFavorite.visibility = View.VISIBLE
+            }
+        }
     }
 }

@@ -64,14 +64,13 @@ class FragmentSearch : Fragment() {
         binding.btnStartSearch.setOnClickListener {
             it.hideKeyboard()
             binding.movieRecyclerView.adapter = adapterSearchFromInternet
-            val movieTitle = binding.movieNameInput.text.toString()
 
             lifecycleScope.launch(Dispatchers.IO) {
                 lateinit var result: MovieListResult
                 try {
                     result = retrofitInterface.searchMovieByTitle(
                         apikey,
-                        movieTitle
+                        binding.movieNameInput.text.toString()
                     )
                     launch(Dispatchers.Main) { adapterSearchFromInternet.submitList(result.Search) }
                 } catch (e: Exception) {
@@ -81,6 +80,8 @@ class FragmentSearch : Fragment() {
         }
 
         binding.btnFavorite.setOnClickListener {
+            it.hideKeyboard()
+            binding.movieNameInput.text.clear()
             binding.movieRecyclerView.adapter = adapterSearchFromDB
             lifecycleScope.launch {
                 adapterSearchFromDB.submitList(

@@ -86,6 +86,17 @@
         android:layout_gravity="center|bottom"
         android:text="@string/add_to_favorite"
         android:textAlignment="center"
+        android:visibility="invisible"
+        android:textSize="15sp" />
+
+    <Button
+        android:id="@+id/btnRemoveFromFavorite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|bottom"
+        android:text="@string/remove_from_favorite"
+        android:textAlignment="center"
+        android:visibility="invisible"
         android:textSize="15sp" />
 
 </FrameLayout>

@@ -7,4 +7,5 @@
     <string name="start_searching">Start Searching</string>
     <string name="favorite_movie">Favorite Movie</string>
     <string name="add_to_favorite">Add To Favorite</string>
+    <string name="remove_from_favorite">Remove From Favorite</string>
 </resources>

@@ -13,4 +13,10 @@ interface FavoriteMovieDAO {
 
     @Query("SELECT * FROM MovieRoom")
     suspend fun getFavoriteMovie(): List<MovieRoom>
+
+    @Query("SELECT imdbID FROM MovieRoom")
+    suspend fun getFavoriteMovieImdbID(): List<String>
+
+    @Query("DELETE FROM MovieRoom WHERE imdbID =:movieImdbID")
+    suspend fun removeFavoriteMovie(movieImdbID: String)
 }
