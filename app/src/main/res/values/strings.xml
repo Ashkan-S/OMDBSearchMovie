@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Search Your Favorite Movie</string>
+    <string name="app_name">Favorite Movie</string>
     <string name="hint_movie_name">Movie Name</string>
     <string name="text_search">Find Your Favorite Movie:</string>
     <string name="button_search">Search</string>
