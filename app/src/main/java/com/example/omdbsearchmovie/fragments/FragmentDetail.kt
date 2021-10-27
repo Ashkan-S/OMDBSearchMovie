@@ -47,8 +47,6 @@ class FragmentDetail : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.btnRemoveFromFavorite.setBackgroundColor(Color.argb(255,255,215,0))
-
         lifecycleScope.launch(Dispatchers.IO) {
             favoriteMovie = retrofitInterface.searchMovieByID(apikey, args.imdbID)
             val favoriteMovieImdbIDList = db.FavoriteMovieDAO().getFavoriteMovieImdbID()

@@ -94,7 +94,7 @@
         android:layout_height="50dp"
         android:layout_gravity="center|bottom"
         android:contentDescription="@string/remove_from_favorite"
-        android:src="@drawable/ic_favorite"
+        android:src="@drawable/ic_addettofavorite"
         android:visibility="invisible" />
 
 </FrameLayout>
