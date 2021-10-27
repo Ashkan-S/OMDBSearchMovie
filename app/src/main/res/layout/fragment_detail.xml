@@ -79,24 +79,22 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <Button
+    <ImageButton
         android:id="@+id/btnAddToFavorite"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_gravity="center|bottom"
-        android:text="@string/add_to_favorite"
-        android:textAlignment="center"
-        android:visibility="invisible"
-        android:textSize="15sp" />
+        android:contentDescription="@string/add_to_favorite"
+        android:src="@drawable/ic_favorite"
+        android:visibility="invisible" />
 
-    <Button
+    <ImageButton
         android:id="@+id/btnRemoveFromFavorite"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_gravity="center|bottom"
-        android:text="@string/remove_from_favorite"
-        android:textAlignment="center"
-        android:visibility="invisible"
-        android:textSize="15sp" />
+        android:contentDescription="@string/remove_from_favorite"
+        android:src="@drawable/ic_favorite"
+        android:visibility="invisible" />
 
 </FrameLayout>
