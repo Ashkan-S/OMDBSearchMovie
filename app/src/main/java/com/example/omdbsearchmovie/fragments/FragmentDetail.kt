@@ -5,7 +5,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.example.omdbsearchmovie.AppDatabase
@@ -77,7 +76,7 @@ class FragmentDetail : Fragment() {
             if (args.isOffline == "N")
                 addToFavoriteMovie(favoriteMovie)
             else if (args.isOffline == "Y")
-                Toast.makeText(context, "No Internet Connection", Toast.LENGTH_LONG).show()
+                addToFavoriteMovie(favoriteOfflineMovie)
         }
 
         binding.btnRemoveFromFavorite.setOnClickListener {
@@ -88,7 +87,7 @@ class FragmentDetail : Fragment() {
         }
     }
 
-    private fun fillMovieDetail(movie: MovieRoom) {
+    private fun fillMovieDetail(movie: MovieResult) {
         val yearAndGenreAndRuntime =
             movie.Year + " - " + movie.Genre + " - " + movie.Runtime
         val rate = movie.Metascore + "/100"
@@ -99,7 +98,7 @@ class FragmentDetail : Fragment() {
         binding.txtRatingScore.text = rate
     }
 
-    private fun fillMovieDetail(movie: MovieResult) {
+    private fun fillMovieDetail(movie: MovieRoom) {
         val yearAndGenreAndRuntime =
             movie.Year + " - " + movie.Genre + " - " + movie.Runtime
         val rate = movie.Metascore + "/100"
@@ -125,6 +124,16 @@ class FragmentDetail : Fragment() {
             )
         lifecycleScope.launch(Dispatchers.IO) {
             db.FavoriteMovieDAO().insertMovie(favoriteMovie)
+            launch(Dispatchers.Main) {
+                binding.btnRemoveFromFavorite.visibility = View.VISIBLE
+                binding.btnAddToFavorite.visibility = View.INVISIBLE
+            }
+        }
+    }
+
+    private fun addToFavoriteMovie(movie: MovieRoom) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            db.FavoriteMovieDAO().insertMovie(movie)
             launch(Dispatchers.Main) {
                 binding.btnRemoveFromFavorite.visibility = View.VISIBLE
                 binding.btnAddToFavorite.visibility = View.INVISIBLE
