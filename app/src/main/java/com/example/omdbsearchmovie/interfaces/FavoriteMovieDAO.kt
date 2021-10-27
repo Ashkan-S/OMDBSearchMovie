@@ -12,7 +12,10 @@ interface FavoriteMovieDAO {
     suspend fun insertMovie(movie: MovieRoom)
 
     @Query("SELECT * FROM MovieRoom")
-    suspend fun getFavoriteMovie(): List<MovieRoom>
+    suspend fun getFavoriteMovieList(): List<MovieRoom>
+
+    @Query("SELECT * FROM MovieRoom WHERE imdbID=:movieImdbID")
+    suspend fun getFavoriteMovie(movieImdbID: String): MovieRoom
 
     @Query("SELECT imdbID FROM MovieRoom")
     suspend fun getFavoriteMovieImdbID(): List<String>

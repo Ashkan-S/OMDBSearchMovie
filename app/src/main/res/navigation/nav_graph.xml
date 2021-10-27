@@ -22,5 +22,8 @@
         <argument
             android:name="imdbID"
             app:argType="string" />
+        <argument
+            android:name="isOffline"
+            app:argType="string" />
     </fragment>
 </navigation>

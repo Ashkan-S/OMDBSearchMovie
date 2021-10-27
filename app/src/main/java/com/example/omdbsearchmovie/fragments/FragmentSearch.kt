@@ -46,13 +46,13 @@ class FragmentSearch : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.btnFavorite.setBackgroundColor(Color.argb(255,255,215,0))
+        binding.btnFavorite.setBackgroundColor(Color.argb(255, 255, 215, 0))
         binding.btnStartSearch.setBackgroundColor(Color.BLUE)
 
         val adapterSearchFromInternet = SearchMovieRecyclerAdapter {
             findNavController().navigate(
                 FragmentSearchDirections.actionFragmentSearchToFragmentDetail(
-                    it
+                    it, "N"
                 )
             )
         }
@@ -60,7 +60,7 @@ class FragmentSearch : Fragment() {
         val adapterSearchFromDB = FavoriteMovieRecyclerAdapter {
             findNavController().navigate(
                 FragmentSearchDirections.actionFragmentSearchToFragmentDetail(
-                    it
+                    it, "Y"
                 )
             )
         }
@@ -87,13 +87,13 @@ class FragmentSearch : Fragment() {
 
         binding.btnFavorite.setOnClickListener {
             it.hideKeyboard()
-            binding.btnFavorite.setBackgroundColor(Color.argb(255,255,215,0))
+            binding.btnFavorite.setBackgroundColor(Color.argb(255, 255, 215, 0))
             binding.btnStartSearch.setBackgroundColor(Color.GRAY)
             binding.movieNameInput.text.clear()
             binding.movieRecyclerView.adapter = adapterSearchFromDB
             lifecycleScope.launch {
                 adapterSearchFromDB.submitList(
-                    db.FavoriteMovieDAO().getFavoriteMovie()
+                    db.FavoriteMovieDAO().getFavoriteMovieList()
                 )
             }
         }
