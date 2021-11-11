@@ -1,4 +1,4 @@
-package com.example.omdbsearchmovie.interfaces
+package com.example.omdbsearchmovie.repository.local
 
 import androidx.room.Dao
 import androidx.room.Insert

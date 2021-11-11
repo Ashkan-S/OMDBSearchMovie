@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/fragmentSearch"
-        android:name="com.example.omdbsearchmovie.fragments.FragmentSearch"
+        android:name="com.example.omdbsearchmovie.features.fragmentSearch.FragmentSearch"
         android:label="fragment_search"
         tools:layout="@layout/fragment_search" >
         <action
@@ -16,7 +16,7 @@
     </fragment>
     <fragment
         android:id="@+id/fragmentDetail"
-        android:name="com.example.omdbsearchmovie.fragments.FragmentDetail"
+        android:name="com.example.omdbsearchmovie.features.fragmentDetail.FragmentDetail"
         android:label="fragment_detail"
         tools:layout="@layout/fragment_detail" >
         <argument

@@ -1,4 +1,4 @@
-package com.example.omdbsearchmovie.adapters
+package com.example.omdbsearchmovie.features.fragmentSearch
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,27 +6,29 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.omdbsearchmovie.databinding.MoviesItemsBinding
-import com.example.omdbsearchmovie.models.Search
+import com.example.omdbsearchmovie.models.MovieRoom
 import com.squareup.picasso.Picasso
 
-class SearchMovieRecyclerAdapter(val clickListener: (String) -> Unit) :
-    ListAdapter<Search, SearchMovieRecyclerAdapter.SearchMovieViewHolder>(MovieDiffUtils()) {
+class FavoriteMovieRecyclerAdapter(val clickListener: (String) -> Unit) :
+    ListAdapter<MovieRoom, FavoriteMovieRecyclerAdapter.FavoriteMovieViewHolder>(
+        FavoriteMovieDiffUtils()
+    ) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchMovieViewHolder =
-        SearchMovieViewHolder(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavoriteMovieViewHolder =
+        FavoriteMovieViewHolder(
             MoviesItemsBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
 
-    override fun onBindViewHolder(holder: SearchMovieViewHolder, position: Int) =
+    override fun onBindViewHolder(holder: FavoriteMovieViewHolder, position: Int) =
         holder.onBind(getItem(position))
 
-    inner class SearchMovieViewHolder(private val binding: MoviesItemsBinding) :
+    inner class FavoriteMovieViewHolder(private val binding: MoviesItemsBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun onBind(item: Search) {
+        fun onBind(item: MovieRoom) {
             Picasso.get().load(item.Poster).into(binding.imageViewMoviePoster)
             binding.textViewMovieName.text = item.Title
-            val typeAndYear = item.Type + " - " + item.Year
+            val typeAndYear = item.Type + " " + item.Year
             binding.textViewMovieTypeAndYear.text = typeAndYear
             binding.root.setOnClickListener {
                 clickListener(item.imdbID)
@@ -34,11 +36,11 @@ class SearchMovieRecyclerAdapter(val clickListener: (String) -> Unit) :
         }
     }
 
-    class MovieDiffUtils : DiffUtil.ItemCallback<Search>() {
-        override fun areItemsTheSame(oldItem: Search, newItem: Search) =
+    class FavoriteMovieDiffUtils : DiffUtil.ItemCallback<MovieRoom>() {
+        override fun areItemsTheSame(oldItem: MovieRoom, newItem: MovieRoom) =
             oldItem.imdbID == newItem.imdbID
 
-        override fun areContentsTheSame(oldItem: Search, newItem: Search) =
+        override fun areContentsTheSame(oldItem: MovieRoom, newItem: MovieRoom) =
             oldItem.Title == newItem.Title && oldItem.Poster == newItem.Poster &&
                     oldItem.Type == newItem.Type && oldItem.Year == newItem.Year
 

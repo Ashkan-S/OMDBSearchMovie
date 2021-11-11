@@ -1,4 +1,4 @@
-package com.example.omdbsearchmovie
+package com.example.omdbsearchmovie.repository.network
 
 import com.example.omdbsearchmovie.models.MovieListResult
 import com.example.omdbsearchmovie.models.MovieResult

@@ -2,6 +2,7 @@ package com.example.omdbsearchmovie
 
 import android.content.Context
 import androidx.room.Room
+import com.example.omdbsearchmovie.repository.network.RetrofitInterfaceClass
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

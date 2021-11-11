@@ -1,35 +1,24 @@
-package com.example.omdbsearchmovie.fragments
+package com.example.omdbsearchmovie.features.fragmentDetail
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.lifecycleScope
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
-import com.example.omdbsearchmovie.AppDatabase
 import com.example.omdbsearchmovie.models.MovieResult
-import com.example.omdbsearchmovie.RetrofitInterfaceClass
 import com.example.omdbsearchmovie.databinding.FragmentDetailBinding
 import com.example.omdbsearchmovie.models.MovieRoom
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class FragmentDetail : Fragment() {
 
-    private val apikey = "ab906375"
-
-    @Inject
-    lateinit var db: AppDatabase
-
-    @Inject
-    lateinit var retrofitInterface: RetrofitInterfaceClass
-
     private lateinit var binding: FragmentDetailBinding
+    private val viewModel by viewModels<FragmentDetailViewModel>()
+
     private lateinit var favoriteMovie: MovieResult
     private lateinit var favoriteOfflineMovie: MovieRoom
 
@@ -48,27 +37,18 @@ class FragmentDetail : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         if (args.isOffline == "N") {
-            lifecycleScope.launch(Dispatchers.IO) {
-                favoriteMovie = retrofitInterface.searchMovieByID(apikey, args.imdbID)
-                val favoriteMovieImdbIDList = db.FavoriteMovieDAO().getFavoriteMovieImdbID()
-                if (favoriteMovie.imdbID in favoriteMovieImdbIDList) {
-                    launch(Dispatchers.Main) {
-                        binding.btnRemoveFromFavorite.visibility = View.VISIBLE
-                    }
-                } else {
-                    launch(Dispatchers.Main) { binding.btnAddToFavorite.visibility = View.VISIBLE }
-                }
-                launch(Dispatchers.Main) {
-                    fillMovieDetail(favoriteMovie)
-                }
+            viewModel.searchMovieByID(args.imdbID)
+            viewModel.getFavoriteMovieImdbID()
+            viewModel.liveDataForSearchFavoriteMovie.observe(viewLifecycleOwner) {
+                favoriteMovie = it
+                fillMovieDetail(it)
             }
         } else if (args.isOffline == "Y") {
+            viewModel.getFavoriteMovie(args.imdbID)
             binding.btnRemoveFromFavorite.visibility = View.VISIBLE
-            lifecycleScope.launch(Dispatchers.IO) {
-                favoriteOfflineMovie = db.FavoriteMovieDAO().getFavoriteMovie(args.imdbID)
-                launch(Dispatchers.Main) {
-                    fillMovieDetail(favoriteOfflineMovie)
-                }
+            viewModel.liveDataForGetFavoriteMovie.observe(viewLifecycleOwner) {
+                favoriteOfflineMovie = it
+                fillMovieDetail(it)
             }
         }
 
@@ -96,6 +76,14 @@ class FragmentDetail : Fragment() {
         binding.txtFullMoviePlot.text = movie.Plot
         binding.txtYearTypeTime.text = yearAndGenreAndRuntime
         binding.txtRatingScore.text = rate
+
+        viewModel.liveDataForFavoriteMovieImdbIDList.observe(viewLifecycleOwner) {
+            if (favoriteMovie.imdbID in it) {
+                binding.btnRemoveFromFavorite.visibility = View.VISIBLE
+            } else {
+                binding.btnAddToFavorite.visibility = View.VISIBLE
+            }
+        }
     }
 
     private fun fillMovieDetail(movie: MovieRoom) {
@@ -122,42 +110,26 @@ class FragmentDetail : Fragment() {
                 movie.Poster,
                 movie.Title
             )
-        lifecycleScope.launch(Dispatchers.IO) {
-            db.FavoriteMovieDAO().insertMovie(favoriteMovie)
-            launch(Dispatchers.Main) {
-                binding.btnRemoveFromFavorite.visibility = View.VISIBLE
-                binding.btnAddToFavorite.visibility = View.INVISIBLE
-            }
-        }
+        viewModel.insertMovie(favoriteMovie)
+        binding.btnRemoveFromFavorite.visibility = View.VISIBLE
+        binding.btnAddToFavorite.visibility = View.INVISIBLE
     }
 
     private fun addToFavoriteMovie(movie: MovieRoom) {
-        lifecycleScope.launch(Dispatchers.IO) {
-            db.FavoriteMovieDAO().insertMovie(movie)
-            launch(Dispatchers.Main) {
-                binding.btnRemoveFromFavorite.visibility = View.VISIBLE
-                binding.btnAddToFavorite.visibility = View.INVISIBLE
-            }
-        }
+        viewModel.insertMovie(movie)
+        binding.btnRemoveFromFavorite.visibility = View.VISIBLE
+        binding.btnAddToFavorite.visibility = View.INVISIBLE
     }
 
     private fun removeFromFavoriteMovie(movie: MovieResult) {
-        lifecycleScope.launch(Dispatchers.IO) {
-            db.FavoriteMovieDAO().removeFavoriteMovie(movie.imdbID)
-            launch(Dispatchers.Main) {
-                binding.btnRemoveFromFavorite.visibility = View.INVISIBLE
-                binding.btnAddToFavorite.visibility = View.VISIBLE
-            }
-        }
+        viewModel.removeFavoriteMovie(movie.imdbID)
+        binding.btnRemoveFromFavorite.visibility = View.INVISIBLE
+        binding.btnAddToFavorite.visibility = View.VISIBLE
     }
 
     private fun removeFromFavoriteMovie(movie: MovieRoom) {
-        lifecycleScope.launch(Dispatchers.IO) {
-            db.FavoriteMovieDAO().removeFavoriteMovie(movie.imdbID)
-            launch(Dispatchers.Main) {
-                binding.btnRemoveFromFavorite.visibility = View.INVISIBLE
-                binding.btnAddToFavorite.visibility = View.VISIBLE
-            }
-        }
+        viewModel.removeFavoriteMovie(movie.imdbID)
+        binding.btnRemoveFromFavorite.visibility = View.INVISIBLE
+        binding.btnAddToFavorite.visibility = View.VISIBLE
     }
 }
