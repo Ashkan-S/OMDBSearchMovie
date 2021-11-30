@@ -56,9 +56,11 @@ class FragmentSearch : Fragment() {
             binding.btnFavorite.setBackgroundColor(Color.GRAY)
             binding.btnStartSearch.setBackgroundColor(Color.BLUE)
 
-            viewModel.onSearchClicked(binding.movieNameInput.text.toString())
-            viewModel.liveDataForMovieListResult.observe(viewLifecycleOwner) {
-                adapterSearchFromInternet.submitList(it.Search)
+            if (binding.movieNameInput.text.toString() != "") {
+                viewModel.onSearchClicked(binding.movieNameInput.text.toString())
+                viewModel.liveDataForMovieListResult.observe(viewLifecycleOwner) {
+                    adapterSearchFromInternet.submitList(it.Search)
+                }
             }
         }
 

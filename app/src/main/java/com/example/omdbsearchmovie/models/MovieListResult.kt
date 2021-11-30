@@ -5,8 +5,8 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class MovieListResult(
     val Response: String,
-    val Search: List<Search>,
-    val totalResults: String
+    val Search: List<Search>?,
+    val totalResults: String?
 )
 
 @JsonClass(generateAdapter = true)
